@@ -23,7 +23,7 @@ CREATE TABLE roles (
 CREATE TABLE employee (
     id INT NOT NULL AUTO INCREMENT,
     first_name VARCHAR(50),
-    last_name CARCHAR(50),
+    last_name VARCHAR(50),
     role_id INT,
     manager_id INT,
     FOREIGN KEY(role_id)
