@@ -1,13 +1,12 @@
 // const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
 // const PORT = process.env.PORT || 3001;
 // const app = express();
 
 const dbConnect = mysql.createConnection({
-    host: 'localHost',
-    port: 3001,
+    host: '127.0.0.1',
     user: 'root',
     password: '',
     database: 'employeesData'
@@ -35,7 +34,7 @@ function dbQuestions() {
         ],
     })
     .then((answer) => {
-        switch (answer.action) {
+        switch (answer.dbQuestions) {
             case 'View all Departments':
                 viewDepartments();
                 break;
