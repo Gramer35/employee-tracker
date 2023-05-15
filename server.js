@@ -97,7 +97,7 @@ function addDepartment(){
     inquirer.prompt({
         type: 'input',
         name: 'newDept',
-        message: 'What is the new department name'
+        message: 'What is the new department name?'
     })
     .then((answer) => {
         const sql = `INSERT INTO department (dept_name) VALUES ('${answer.newDept}')`;
@@ -112,12 +112,38 @@ function addDepartment(){
 
 
 function addRole(){
-
+    inquirer.prompt({
+        type: 'input',
+        name: 'newRole',
+        message: 'What is the name of the Role?'
+    })
+    .then((answer) => {
+        const sql = `INSERT INTO roles (dept_name) VALUES ('${answer.newRole}')`;
+        dbConnect.query(sql, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+        
+            dbQuestions();
+        });
+    });
 };
 
 
 function addEmployee(){
-
+    inquirer.prompt({
+        type: 'input',
+        name: 'newEmployee',
+        message: 'What is the name of the new Employee?'
+    })
+    .then((answer) => {
+        const sql = `INSERT INTO employee (dept_name) VALUES ('${answer.newEmployee}')`;
+        dbConnect.query(sql, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+        
+            dbQuestions();
+        });
+    });
 };
 
 
