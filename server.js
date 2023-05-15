@@ -89,12 +89,25 @@ function viewEmployees(){
     
         dbQuestions();
     });
-
+    
 };
 
 
 function addDepartment(){
-
+    inquirer.prompt({
+        type: 'input',
+        name: 'newDept',
+        message: 'What is the new department name'
+    })
+    .then((answer) => {
+        const sql = `INSERT INTO department (dept_name) VALUES ('${answer.newDept}')`;
+        dbConnect.query(sql, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+        
+            dbQuestions();
+        });
+    });
 };
 
 
