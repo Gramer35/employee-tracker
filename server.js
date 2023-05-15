@@ -112,13 +112,23 @@ function addDepartment(){
 
 
 function addRole(){
-    inquirer.prompt({
+    inquirer.prompt([{
         type: 'input',
         name: 'newRole',
         message: 'What is the name of the Role?'
-    })
+    },
+    {
+        type: 'input',
+        name: 'dept',
+        message: 'What department does the role belong to?'
+    },
+    {
+        type: 'input',
+        name: 'salary',
+        message: 'What is the salary of the new role?'
+    }])
     .then((answer) => {
-        const sql = `INSERT INTO roles (dept_name) VALUES ('${answer.newRole}')`;
+        const sql = `INSERT INTO roles (title, department_id, salary) VALUES ('${answer.newRole}', '${answer.dept}', '${answer.salary}')`;
         dbConnect.query(sql, (err, res) => {
             if (err) throw err;
             console.table(res);
@@ -130,13 +140,23 @@ function addRole(){
 
 
 function addEmployee(){
-    inquirer.prompt({
+    inquirer.prompt([{
         type: 'input',
-        name: 'newEmployee',
-        message: 'What is the name of the new Employee?'
-    })
+        name: 'employeeFirstName',
+        message: 'What is the first name of the new Employee?'
+    },
+    {
+        type: 'input',
+        name: 'employeeLastName',
+        message: 'What is the last name of the new Employee'
+    },
+    {
+        type: 'input',
+        name: 'roleId',
+        message: "What is the Employee's role ID?"
+    }])
     .then((answer) => {
-        const sql = `INSERT INTO employee (dept_name) VALUES ('${answer.newEmployee}')`;
+        const sql = `INSERT INTO employee (first_name, last_name, role_id) VALUES ('${answer.employeeFirstName}', '${answer.employeeLastName}', '${answer.roleId}')`;
         dbConnect.query(sql, (err, res) => {
             if (err) throw err;
             console.table(res);
