@@ -168,5 +168,10 @@ function addEmployee(){
 
 
 function updateEmployeeRole(){
+    // Pull list of employees
+    const sqlEmployees = 'SELECT * FROM employee';
+    const sqlRoles = 'SELECT * FROM roles';
+    // Select Employee
+    // Change their role from list of roles
 
 };
