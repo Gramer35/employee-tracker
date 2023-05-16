@@ -32,3 +32,4 @@ VALUES ('Nick', 'Fury', 1),
 
 
 
+-- Pre-set information to be inserted into the tables within the database
