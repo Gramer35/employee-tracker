@@ -1,10 +1,7 @@
-// const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const utils = require('util');
 
-// const PORT = process.env.PORT || 3001;
-// const app = express();
 
 const dbConnect = mysql.createConnection({
     host: '127.0.0.1',
@@ -68,11 +65,11 @@ async function viewDepartments() {
 
         const table = await dbConnect.query(sql)
         console.table(table);
-
         dbQuestions();
+
     } catch (err) {
         console.error('Error viewing Departments')
-        dbQuestions
+        dbQuestions();
     }
 };
 
@@ -86,20 +83,19 @@ async function viewRoles() {
         dbQuestions();
     } catch (err) {
         console.error('Error viewing Roles:', err);
-        dbQuestions;
+        dbQuestions();
     }
 };
 
 async function viewEmployees() {
-    const sql = 'SELECT * FROM employee';
+    const sql = 'SELECT first_name, last_name, roles.title FROM employee JOIN roles ON employee.role_id = roles.id';
     try {
         const table = await dbConnect.query(sql)
         console.table(table);
-
         dbQuestions();
     } catch (err) {
-        console.error('Error viewing Employees');
-        dbQuestions;
+        console.error('Error viewing Employees', err);
+        dbQuestions();
     }
 };
 
@@ -110,14 +106,13 @@ async function addDepartment() {
         type: 'input',
         name: 'newDept',
         message: 'What is the new department name?'
-    })
+    });
 
     const sql = `INSERT INTO department (dept_name) VALUES (?)`;
     const table = await dbConnect.query(sql, [
         deptAddition.newDept
     ]);
     console.table(table);
-
     dbQuestions();
 };
 
@@ -146,7 +141,6 @@ async function addRole() {
         roleAddition.salary
     ]);
     console.table(table);
-
     dbQuestions();
 
 };
@@ -177,7 +171,6 @@ async function addEmployee() {
         empAddition.roleId,
     ]);
     console.table(table);
-
     dbQuestions();
 
 };
@@ -197,8 +190,7 @@ async function updateEmployeeRole() {
             value: employee.id
         })),
     });
-    // Once user selects employee, we want to save employee id
-    // we then need to list all of th eroles to the user and let them selver which role they want to assign 
+
     const roles = await dbConnect.query(sqlRoles);
     const { roleID } = await inquirer.prompt({
         name: 'roleID',
@@ -209,11 +201,7 @@ async function updateEmployeeRole() {
         })),
     });
 
-    await dbConnect.query('UPDATE employees SET role_id = ? WHERE id = ?', [roleID, employeeID])
-    // then take user id and the new role id and update our user
+    await dbConnect.query('UPDATE employee SET role_id = ? WHERE id = ?', [roleID, employeeID]);
 
-
-    dbConnect.query(sqlEmployees, (err, res) => {
-
-    })
+    viewEmployees();
 };

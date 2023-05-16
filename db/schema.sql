@@ -16,7 +16,6 @@ CREATE TABLE roles (
     PRIMARY KEY(id),
     FOREIGN KEY(department_id)
     REFERENCES department(id)
-    -- necessary?
     ON DELETE SET NULL
 );
 
@@ -29,10 +28,6 @@ CREATE TABLE employee (
     PRIMARY KEY(id),
     FOREIGN KEY(role_id)
     REFERENCES roles(id)
-    -- necessary?
     ON DELETE SET NULL
-    -- FOREIGN KEY(manager_id)
-    -- REFERENCES employee(id)
-    -- -- necessary?
-    -- ON DELETE SET NULL
+
 );
