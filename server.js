@@ -1,6 +1,7 @@
 // const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const utils = require('utils');
 
 // const PORT = process.env.PORT || 3001;
 // const app = express();
@@ -11,6 +12,8 @@ const dbConnect = mysql.createConnection({
     password: 'F!nN3@s731',
     database: 'employeesData'
 });
+
+dbConnect.query = utils.promisify(dbConnect.query);
 
 dbConnect.connect((err) => {
     if (err) throw err;
@@ -167,15 +170,42 @@ function addEmployee(){
 };
 
 
-function updateEmployeeRole(){
+async function updateEmployeeRole(){
     // Pull list of employees
-    const sqlEmployees = 'SELECT employee.first_name, employee.last_name, role_id FROM employee JOIN roles ON employee.role_id = roles.id';
+    const sqlEmployees = 'SELECT * FROM employee';
     const sqlRoles = 'SELECT * FROM roles';
     // Select Employee
     // Change their role from list of roles
     const sql = 'update employees set role_id = ? where id = ?';
+    
+    // FInd and list all employees - This is going to let the user select who they want to update
+    const employees = await dbConnect.query(sqlEmployees);
 
-    dbConnect.query(sqlEmployees, (err, res) => {
-        
-    })
+    const {employeeID} = await inquirer.prompt({
+        name: 'employeeID',
+        type: 'list',
+        choices: employees.map (employee => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id
+        })),
+    });
+    // Once user selects employee, we want to save employee id
+    // we then need to list all of th eroles to the user and let them selver which role they want to assign 
+    const roles = await dbConnect.query(sqlRoles);
+    const {roleID} = await inquirer.prompt({
+        name: 'roleID',
+        type: 'list',
+        choices: roles.map((role) => ({
+            name: role.title,
+            value: role.id
+        })),
+    });
+
+    await dbConnect.query('UPDATE employees SET role_id = ? WHERE id = ?', [roleID, employeeID])
+    // then take user id and the new role id and update our user
+
+
+    // dbConnect.query(sqlEmployees, (err, res) => {
+
+    // })
 };
