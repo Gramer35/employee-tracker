@@ -8,7 +8,7 @@ const inquirer = require('inquirer');
 const dbConnect = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
-    password: '',
+    password: 'F!nN3@s731',
     database: 'employeesData'
 });
 
@@ -100,8 +100,8 @@ function addDepartment(){
         message: 'What is the new department name?'
     })
     .then((answer) => {
-        const sql = `INSERT INTO department (dept_name) VALUES ('${answer.newDept}')`;
-        dbConnect.query(sql, (err, res) => {
+        const sql = `INSERT INTO department (dept_name) VALUES (?)`;
+        dbConnect.query(sql, [answer.newDept], (err, res) => {
             if (err) throw err;
             console.table(res);
         
@@ -128,8 +128,8 @@ function addRole(){
         message: 'What is the salary of the new role?'
     }])
     .then((answer) => {
-        const sql = `INSERT INTO roles (title, department_id, salary) VALUES ('${answer.newRole}', '${answer.dept}', '${answer.salary}')`;
-        dbConnect.query(sql, (err, res) => {
+        const sql = `INSERT INTO roles (title, department_id, salary) VALUES (?, ?, ?)`;
+        dbConnect.query(sql, [answer.newrole, answer.dept, answer.salary], (err, res) => {
             if (err) throw err;
             console.table(res);
         
@@ -156,8 +156,8 @@ function addEmployee(){
         message: "What is the Employee's role ID?"
     }])
     .then((answer) => {
-        const sql = `INSERT INTO employee (first_name, last_name, role_id) VALUES ('${answer.employeeFirstName}', '${answer.employeeLastName}', '${answer.roleId}')`;
-        dbConnect.query(sql, (err, res) => {
+        const sql = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
+        dbConnect.query(sql, [answer.employeeFirstName, answer.employeeLastName, answer.roleId], (err, res) => {
             if (err) throw err;
             console.table(res);
         
@@ -169,9 +169,13 @@ function addEmployee(){
 
 function updateEmployeeRole(){
     // Pull list of employees
-    const sqlEmployees = 'SELECT * FROM employee';
+    const sqlEmployees = 'SELECT employee.first_name, employee.last_name, role_id FROM employee JOIN roles ON employee.role_id = roles.id';
     const sqlRoles = 'SELECT * FROM roles';
     // Select Employee
     // Change their role from list of roles
+    const sql = 'update employees set role_id = ? where id = ?';
 
+    dbConnect.query(sqlEmployees, (err, res) => {
+        
+    })
 };
