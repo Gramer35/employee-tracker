@@ -1,7 +1,7 @@
 // const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const utils = require('utils');
+const utils = require('util');
 
 // const PORT = process.env.PORT || 3001;
 // const app = express();
@@ -9,7 +9,7 @@ const utils = require('utils');
 const dbConnect = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
-    password: 'F!nN3@s731',
+    password: '',
     database: 'employeesData'
 });
 
@@ -21,8 +21,8 @@ dbConnect.connect((err) => {
     dbQuestions();
 });
 
-function dbQuestions() {
-    inquirer.prompt ({
+async function dbQuestions() {
+    const answer = await inquirer.prompt({
         type: 'list',
         name: 'dbQuestions',
         message: 'Please select an option',
@@ -36,86 +36,94 @@ function dbQuestions() {
             'Update an Employee Role'
         ],
     })
-    .then((answer) => {
-        switch (answer.dbQuestions) {
-            case 'View all Departments':
-                viewDepartments();
-                break;
-            case 'View all Roles':
-                viewRoles();
-                break;
-            case 'View all Employees':
-                viewEmployees();
-                break;
-            case 'Add a Department':
-                addDepartment();
-                break;
-            case 'Add a Role':
-                addRole();
-                break;
-            case 'Add an Employee':
-                addEmployee();
-                break;
-            case 'Update an Employee Role':
-                updateEmployeeRole();
-                break;
-        }
-    });
-}
 
-function viewDepartments(){
+    switch (answer.dbQuestions) {
+        case 'View all Departments':
+            viewDepartments();
+            break;
+        case 'View all Roles':
+            viewRoles();
+            break;
+        case 'View all Employees':
+            viewEmployees();
+            break;
+        case 'Add a Department':
+            addDepartment();
+            break;
+        case 'Add a Role':
+            addRole();
+            break;
+        case 'Add an Employee':
+            addEmployee();
+            break;
+        case 'Update an Employee Role':
+            updateEmployeeRole();
+            break;
+    };
+};
+
+async function viewDepartments() {
     const sql = 'SELECT * FROM department';
-    dbConnect.query(sql, (err, res) => {
-        if (err) throw err;
-        console.table(res);
+    try {
+
+        const table = await dbConnect.query(sql)
+        console.table(table);
 
         dbQuestions();
-    });
+    } catch (err) {
+        console.error('Error viewing Departments')
+        dbQuestions
+    }
 };
 
-function viewRoles(){
+
+async function viewRoles() {
     const sql = 'SELECT * FROM roles';
-    dbConnect.query(sql, (err, res) => {
-        if (err) throw err;
-        console.table(res);
-    
+    try {
+
+        const table = await dbConnect.query(sql);
+        console.table(table);
         dbQuestions();
-    });
+    } catch (err) {
+        console.error('Error viewing Roles:', err);
+        dbQuestions;
+    }
 };
 
-
-function viewEmployees(){
+async function viewEmployees() {
     const sql = 'SELECT * FROM employee';
-    dbConnect.query(sql, (err, res) => {
-        if (err) throw err;
-        console.table(res);
-    
+    try {
+        const table = await dbConnect.query(sql)
+        console.table(table);
+
         dbQuestions();
-    });
-    
+    } catch (err) {
+        console.error('Error viewing Employees');
+        dbQuestions;
+    }
 };
 
 
-function addDepartment(){
-    inquirer.prompt({
+
+async function addDepartment() {
+    const deptAddition = await inquirer.prompt({
         type: 'input',
         name: 'newDept',
         message: 'What is the new department name?'
     })
-    .then((answer) => {
-        const sql = `INSERT INTO department (dept_name) VALUES (?)`;
-        dbConnect.query(sql, [answer.newDept], (err, res) => {
-            if (err) throw err;
-            console.table(res);
-        
-            dbQuestions();
-        });
-    });
+
+    const sql = `INSERT INTO department (dept_name) VALUES (?)`;
+    const table = await dbConnect.query(sql, [
+        deptAddition.newDept
+    ]);
+    console.table(table);
+
+    dbQuestions();
 };
 
 
-function addRole(){
-    inquirer.prompt([{
+async function addRole() {
+    const roleAddition = await inquirer.prompt([{
         type: 'input',
         name: 'newRole',
         message: 'What is the name of the Role?'
@@ -129,21 +137,23 @@ function addRole(){
         type: 'input',
         name: 'salary',
         message: 'What is the salary of the new role?'
-    }])
-    .then((answer) => {
-        const sql = `INSERT INTO roles (title, department_id, salary) VALUES (?, ?, ?)`;
-        dbConnect.query(sql, [answer.newrole, answer.dept, answer.salary], (err, res) => {
-            if (err) throw err;
-            console.table(res);
-        
-            dbQuestions();
-        });
-    });
+    }]);
+
+    const sql = `INSERT INTO roles (title, department_id, salary) VALUES (?, ?, ?)`;
+    const table = await dbConnect.query(sql, [
+        roleAddition.newRole,
+        roleAddition.dept,
+        roleAddition.salary
+    ]);
+    console.table(table);
+
+    dbQuestions();
+
 };
 
 
-function addEmployee(){
-    inquirer.prompt([{
+async function addEmployee() {
+    const empAddition = await inquirer.prompt([{
         type: 'input',
         name: 'employeeFirstName',
         message: 'What is the first name of the new Employee?'
@@ -157,34 +167,32 @@ function addEmployee(){
         type: 'input',
         name: 'roleId',
         message: "What is the Employee's role ID?"
-    }])
-    .then((answer) => {
-        const sql = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
-        dbConnect.query(sql, [answer.employeeFirstName, answer.employeeLastName, answer.roleId], (err, res) => {
-            if (err) throw err;
-            console.table(res);
-        
-            dbQuestions();
-        });
-    });
+    }]);
+
+    const sql = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
+
+    const table = await dbConnect.query(sql, [
+        empAddition.employeeFirstName,
+        empAddition.employeeLastName,
+        empAddition.roleId,
+    ]);
+    console.table(table);
+
+    dbQuestions();
+
 };
 
 
-async function updateEmployeeRole(){
-    // Pull list of employees
+async function updateEmployeeRole() {
     const sqlEmployees = 'SELECT * FROM employee';
     const sqlRoles = 'SELECT * FROM roles';
-    // Select Employee
-    // Change their role from list of roles
-    const sql = 'update employees set role_id = ? where id = ?';
-    
-    // FInd and list all employees - This is going to let the user select who they want to update
+
     const employees = await dbConnect.query(sqlEmployees);
 
-    const {employeeID} = await inquirer.prompt({
+    const { employeeID } = await inquirer.prompt({
         name: 'employeeID',
         type: 'list',
-        choices: employees.map (employee => ({
+        choices: employees.map(employee => ({
             name: `${employee.first_name} ${employee.last_name}`,
             value: employee.id
         })),
@@ -192,7 +200,7 @@ async function updateEmployeeRole(){
     // Once user selects employee, we want to save employee id
     // we then need to list all of th eroles to the user and let them selver which role they want to assign 
     const roles = await dbConnect.query(sqlRoles);
-    const {roleID} = await inquirer.prompt({
+    const { roleID } = await inquirer.prompt({
         name: 'roleID',
         type: 'list',
         choices: roles.map((role) => ({
@@ -205,7 +213,7 @@ async function updateEmployeeRole(){
     // then take user id and the new role id and update our user
 
 
-    // dbConnect.query(sqlEmployees, (err, res) => {
+    dbConnect.query(sqlEmployees, (err, res) => {
 
-    // })
+    })
 };
