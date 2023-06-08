@@ -1,3 +1,6 @@
+DROP DATABASE IF EXISTS employeesData;
+
+
 -- Start by creating a new database
 CREATE DATABASE employeesData;
 
