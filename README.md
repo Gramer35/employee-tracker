@@ -3,6 +3,8 @@
 
 ## Description
 
+The purpose of this program is to create a tracker for an employer so that they can keep track of their employees and their roles along with their salary. Additionally, when a new role, department, or employee is needed, the user can add each of those. When an employee role needs adjusting, that can be arranged as well. This allows for easy tracking of employees and their roles.  
+
 Provide a short description explaining the what, why, and how of your project. Use the following questions as a guide:
 
 - What was your motivation?
@@ -11,13 +13,12 @@ Provide a short description explaining the what, why, and how of your project. U
 - What did you learn?
 
 
-## Installation
-
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
-
 ## Usage
 
-Provide instructions and examples for use. Include screenshots as needed.
+Program is ran through the terminal and with node. User will use 'node server.js' and follow the prompts. 
 
+![Showing that using 'node server.js' will start the program](/images/node.png)
+
+![Showing that using 'node server.js' will start the program](/images/department.png)
 
 
